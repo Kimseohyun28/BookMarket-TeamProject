@@ -54,7 +54,6 @@ public class CartItemListPage extends JPanel {
 
 		JPanel totalPricePanel = new JPanel();
 		totalPricePanel.setBounds(0, 400, 1000, 50);
-		// totalPricePanel.setBackground(Color.RED);
 		JLabel totalPricelabel = new JLabel("총금액: " + totalPrice + " 원");
 		totalPricelabel.setForeground(Color.red);
 		totalPricelabel.setFont(ft);

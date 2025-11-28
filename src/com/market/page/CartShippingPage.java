@@ -82,7 +82,6 @@ public class CartShippingPage extends JPanel {
 
 		JPanel namePanel = new JPanel();
 		namePanel.setBounds(0, 100, 700, 50);
-		// namePanel.setBackground(Color.GRAY);
 		JLabel nameLabel = new JLabel("고객명 : ");
 		nameLabel.setFont(ft);
 		namePanel.add(nameLabel);
@@ -91,7 +90,6 @@ public class CartShippingPage extends JPanel {
 		nameLabel2.setFont(ft);
 		if (select) {
 			nameLabel2.setBackground(Color.LIGHT_GRAY);
-			// nameLabel2.setText("입력된 고객 이름");
 			nameLabel2.setText(UserInIt.getmUser().getName());
 		}
 		namePanel.add(nameLabel2);
@@ -107,7 +105,6 @@ public class CartShippingPage extends JPanel {
 		phoneLabel2.setFont(ft);
 		if (select) {
 			phoneLabel2.setBackground(Color.LIGHT_GRAY);
-			// phoneLabel2.setText("입력된 고객 연락처");
 			phoneLabel2.setText(String.valueOf(UserInIt.getmUser().getPhone()));
 		}
 		phonePanel.add(phoneLabel2);
