@@ -1,5 +1,5 @@
 package com.market.page;
-
+import com.market.dao.AdminDAO;
 import com.market.member.Admin;
 
 import java.awt.Color;
@@ -70,17 +70,32 @@ public class AdminLoginDialog extends JDialog {
 		buttonPanel.add(cancelBtn);
 
 		okButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		    public void actionPerformed(ActionEvent e) {
 
-				Admin admin = new Admin("", -1);
-				System.out.println(pwField.getText() + idField.getText());
-				System.out.println(admin.getId() + admin.getPassword());
-				if (admin.getId().equals(idField.getText()) && admin.getPassword().equals(pwField.getText())) {
-					isLogin = true;
-					dispose();
-				} else
-					JOptionPane.showMessageDialog(okButton, "관리자 정보가 일치하지 않습니다");
-			}
+		        String adminId = idField.getText().trim();
+		        String adminPw = pwField.getText().trim();
+
+		        // 입력 안 했을 때 체크
+		        if (adminId.isEmpty() || adminPw.isEmpty()) {
+		            JOptionPane.showMessageDialog(okButton, "아이디와 비밀번호를 모두 입력하세요");
+		            return;
+		        }
+
+		        // DB 기반 로그인 체크
+		        AdminDAO adminDao = new AdminDAO();
+		        Admin admin = adminDao.login(adminId, adminPw);
+
+		        if (admin != null) {
+		            // 로그인 성공
+		            isLogin = true;
+		            // 원하면 여기서 admin 정보 출력도 가능
+		            // System.out.println("관리자 로그인: " + admin.getName());
+		            dispose();
+		        } else {
+		            // 로그인 실패
+		            JOptionPane.showMessageDialog(okButton, "관리자 정보가 일치하지 않습니다");
+		        }
+		    }
 		});
 
 		cancelBtn.addActionListener(new ActionListener() {
