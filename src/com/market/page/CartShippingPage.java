@@ -96,10 +96,8 @@ public class CartShippingPage extends JPanel {
 		nameField = new JTextField(15);
 		nameField.setFont(ft);
 		if (select) {
-
 			nameField.setBackground(Color.LIGHT_GRAY);
 			nameField.setText(UserInIt.getmUser().getName());
-
 		}
 		namePanel.add(nameField);
 		shippingPanel.add(namePanel);
@@ -115,7 +113,6 @@ public class CartShippingPage extends JPanel {
 		if (select) {
 			phoneField.setBackground(Color.LIGHT_GRAY);
 			phoneField.setText(String.valueOf(UserInIt.getmUser().getPhone()));
-
 		}
 		phonePanel.add(phoneField);
 		shippingPanel.add(phonePanel);
