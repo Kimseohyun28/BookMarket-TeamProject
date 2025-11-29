@@ -5,7 +5,8 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.awt.event.ActionEvent;
-import java.io.FileWriter;
+import com.market.bookitem.Book;
+import com.market.dao.BookDAO;
 
 public class AdminPage extends JPanel {
 
@@ -106,39 +107,64 @@ public class AdminPage extends JPanel {
 		buttonPanel.add(okButton);
 
 		okButton.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				String[] writeBook = new String[7];
-				writeBook[0] = idTextField.getText();
-				writeBook[1] = nameTextField.getText();
-				writeBook[2] = priceTextField.getText();
-				writeBook[3] = authorTextField.getText();
-				writeBook[4] = descTextField.getText();
-				writeBook[5] = categoryTextField.getText();
-				writeBook[6] = dateTextField.getText();
-				try {
-					FileWriter fw = new FileWriter("book.txt", true);
-					for (int i = 0; i < 7; i++)
-						fw.write(writeBook[i] + "\n");
-					fw.close();
-					JOptionPane.showMessageDialog(okButton, "새 도서 정보가 저장되었습니다");
+		    public void actionPerformed(ActionEvent e) {
+		        String bookId   = idTextField.getText().trim();
+		        String name     = nameTextField.getText().trim();
+		        String priceStr = priceTextField.getText().trim();
+		        String author   = authorTextField.getText().trim();
+		        String desc     = descTextField.getText().trim();
+		        String category = categoryTextField.getText().trim();
+		        String date     = dateTextField.getText().trim();
 
-					Date date = new Date();
-					SimpleDateFormat formatter = new SimpleDateFormat("yyMMddhhmmss");
-					String strDate = formatter.format(date);
+		        // 간단한 입력값 체크
+		        if (bookId.isEmpty() || name.isEmpty() || priceStr.isEmpty()) {
+		            JOptionPane.showMessageDialog(okButton, "도서ID, 도서명, 가격은 반드시 입력해야 합니다.");
+		            return;
+		        }
 
-					idTextField.setText("ISBN" + strDate);
-					nameTextField.setText("");
-					priceTextField.setText("");
-					authorTextField.setText("");
-					descTextField.setText("");
-					categoryTextField.setText("");
-					dateTextField.setText("");
+		        int price = 0;
+		        try {
+		            price = Integer.parseInt(priceStr);
+		        } catch (NumberFormatException ex) {
+		            JOptionPane.showMessageDialog(okButton, "가격은 숫자로 입력해야 합니다.");
+		            return;
+		        }
 
-					System.out.println("새 도서 정보가 저장되었습니다.");
-				} catch (Exception ex) {
-					System.out.println(ex);
-				}
-			}
+		        // Book 객체 만들기
+		        Book newBook = new Book(
+		                bookId,
+		                name,
+		                price,
+		                author,
+		                desc,
+		                category,
+		                date
+		        );
+
+		        // DB에 INSERT
+		        BookDAO dao = new BookDAO();
+		        int result = dao.insert(newBook);
+
+		        if (result > 0) {
+		            JOptionPane.showMessageDialog(okButton, "새 도서 정보가 DB에 저장되었습니다.");
+
+		            // 다음 책 입력을 위해 필드 초기화 + 새로운 ID 생성
+		            java.util.Date now = new java.util.Date();
+		            java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyMMddhhmmss");
+		            String strDate = formatter.format(now);
+
+		            idTextField.setText("ISBN" + strDate);
+		            nameTextField.setText("");
+		            priceTextField.setText("");
+		            authorTextField.setText("");
+		            descTextField.setText("");
+		            categoryTextField.setText("");
+		            dateTextField.setText("");
+
+		        } else {
+		            JOptionPane.showMessageDialog(okButton, "도서 저장에 실패했습니다. (이미 존재하는 ID일 수 있습니다.)");
+		        }
+		    }
 		});
 
 		JLabel noLabel = new JLabel("취소");
