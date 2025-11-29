@@ -24,7 +24,6 @@ public class GuestInfoPage extends JPanel {
 		nameLabel.setBackground(Color.BLUE);
 
 		JLabel nameField = new JLabel();
-		// nameField.setText("입력된 고객이름");
 		nameField.setText(UserInIt.getmUser().getName());
 		nameField.setFont(ft);
 
@@ -37,7 +36,6 @@ public class GuestInfoPage extends JPanel {
 		JLabel phoneLabel = new JLabel("연락처 : ");
 		phoneLabel.setFont(ft);
 		JLabel phoneField = new JLabel();
-		// phoneField.setText("입력된 고객 연락처");
 		phoneField.setText(String.valueOf(UserInIt.getmUser().getPhone()));
 		phoneField.setFont(ft);
 

@@ -30,13 +30,10 @@ public class CartOrderBillPage extends JPanel {
 		this.mCart = cart;
 
 		shippingPanel = new JPanel();
-		// shippingPanel.setBounds(200, 50, 700, 500);
 		shippingPanel.setBounds(0, 0, 700, 500);
 		shippingPanel.setLayout(null);
-		// add(shippingPanel);
 		panel.add(shippingPanel);
 		
-		// printBillInfo("입력된 고객 이름", "입력된 고객 연락처", "입력된 고객 배송지");
 		printBillInfo(UserInIt.getmUser().getName(), String.valueOf(UserInIt.getmUser().getPhone()), UserInIt.getmUser().getAddress());
 	}
 
@@ -51,7 +48,6 @@ public class CartOrderBillPage extends JPanel {
 
 		JPanel panel01 = new JPanel();
 		panel01.setBounds(0, 0, 500, 30);
-		// panel01.setBackground(Color.GRAY);
 		JLabel label01 = new JLabel("---------------------배송 받을 고객 정보-----------------------");
 		label01.setFont(ft);
 		panel01.add(label01);
@@ -139,7 +135,6 @@ public class CartOrderBillPage extends JPanel {
 		JPanel panel07 = new JPanel();
 		panel07.setBounds(0, 40 + (mCart.mCartItem.size() * 5), 500, 5);
 		JLabel label07 = new JLabel("      주문 총금액 : " + sum + "원");
-		// label04.setHorizontalAlignment(JLabel.CENTER);
 		label07.setFont(new Font("함초롬돋움", Font.BOLD, 15));
 		panel07.add(label07);
 		panel.add(panel07);

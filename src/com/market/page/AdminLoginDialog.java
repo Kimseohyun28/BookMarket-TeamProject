@@ -1,5 +1,5 @@
 package com.market.page;
-
+import com.market.dao.AdminDAO;
 import com.market.member.Admin;
 
 import java.awt.Color;
@@ -17,10 +17,10 @@ public class AdminLoginDialog extends JDialog {
 	public boolean isLogin = false;
 
 	public AdminLoginDialog(JFrame frame, String str) {
-		super(frame, "°ü¸®ÀÚ·Î±×ÀÎ", true);
+		super(frame, "ê´€ë¦¬ì ë¡œê·¸ì¸", true);
 
 		Font ft;
-		ft = new Font("ÇÔÃÊ·Òµ¸¿ò", Font.BOLD, 15);
+		ft = new Font("í•¨ì´ˆë¡¬ë‹ì›€", Font.BOLD, 15);
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation((screenSize.width - 400) / 2, (screenSize.height - 300) / 2);
@@ -30,14 +30,14 @@ public class AdminLoginDialog extends JDialog {
 		JPanel titlePanel = new JPanel();
 		titlePanel.setBounds(0, 20, 400, 50);
 		add(titlePanel);
-		JLabel titleLabel = new JLabel("°ü¸®ÀÚ ·Î±×ÀÎ");
-		titleLabel.setFont(new Font("ÇÔÃÊ·Òµ¸¿ò", Font.BOLD, 20));
+		JLabel titleLabel = new JLabel("ê´€ë¦¬ì ë¡œê·¸ì¸");
+		titleLabel.setFont(new Font("í•¨ì´ˆë¡¬ë‹ì›€", Font.BOLD, 20));
 		titlePanel.add(titleLabel);
 
 		JPanel idPanel = new JPanel();
 		idPanel.setBounds(0, 70, 400, 50);
 		add(idPanel);
-		JLabel idLabel = new JLabel("¾Æ ÀÌ µğ : ");
+		JLabel idLabel = new JLabel("ì•„ ì´ ë”” : ");
 		idLabel.setFont(ft);
 		idField = new JTextField(10);
 		idField.setFont(ft);
@@ -47,7 +47,7 @@ public class AdminLoginDialog extends JDialog {
 		JPanel pwPanel = new JPanel();
 		pwPanel.setBounds(0, 120, 400, 50);
 		add(pwPanel);
-		JLabel pwLabel = new JLabel("ºñ¹Ğ¹øÈ£ : ");
+		JLabel pwLabel = new JLabel("ë¹„ë°€ë²ˆí˜¸ : ");
 		pwLabel.setFont(ft);
 		pwField = new JTextField(10);
 		pwField.setFont(ft);
@@ -57,30 +57,45 @@ public class AdminLoginDialog extends JDialog {
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setBounds(0, 170, 400, 50);
 		add(buttonPanel);
-		JLabel okLabel = new JLabel("È®ÀÎ");
+		JLabel okLabel = new JLabel("í™•ì¸");
 		okLabel.setFont(ft);
 		JButton okButton = new JButton();
 		okButton.add(okLabel);
 		buttonPanel.add(okButton);
 
-		JLabel cancelLabel = new JLabel("Ãë¼Ò");
+		JLabel cancelLabel = new JLabel("ì·¨ì†Œ");
 		cancelLabel.setFont(ft);
 		JButton cancelBtn = new JButton();
 		cancelBtn.add(cancelLabel);
 		buttonPanel.add(cancelBtn);
 
 		okButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		    public void actionPerformed(ActionEvent e) {
 
-				Admin admin = new Admin("", -1);
-				System.out.println(pwField.getText() + idField.getText());
-				System.out.println(admin.getId() + admin.getPassword());
-				if (admin.getId().equals(idField.getText()) && admin.getPassword().equals(pwField.getText())) {
-					isLogin = true;
-					dispose();
-				} else
-					JOptionPane.showMessageDialog(okButton, "°ü¸®ÀÚ Á¤º¸°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù");
-			}
+		        String adminId = idField.getText().trim();
+		        String adminPw = pwField.getText().trim();
+
+		        // ì…ë ¥ ì•ˆ í–ˆì„ ë•Œ ì²´í¬
+		        if (adminId.isEmpty() || adminPw.isEmpty()) {
+		            JOptionPane.showMessageDialog(okButton, "ì•„ì´ë””ì™€ ë¹„ë°€ë²ˆí˜¸ë¥¼ ëª¨ë‘ ì…ë ¥í•˜ì„¸ìš”");
+		            return;
+		        }
+
+		        // DB ê¸°ë°˜ ë¡œê·¸ì¸ ì²´í¬
+		        AdminDAO adminDao = new AdminDAO();
+		        Admin admin = adminDao.login(adminId, adminPw);
+
+		        if (admin != null) {
+		            // ë¡œê·¸ì¸ ì„±ê³µ
+		            isLogin = true;
+		            // ì›í•˜ë©´ ì—¬ê¸°ì„œ admin ì •ë³´ ì¶œë ¥ë„ ê°€ëŠ¥
+		            // System.out.println("ê´€ë¦¬ì ë¡œê·¸ì¸: " + admin.getName());
+		            dispose();
+		        } else {
+		            // ë¡œê·¸ì¸ ì‹¤íŒ¨
+		            JOptionPane.showMessageDialog(okButton, "ê´€ë¦¬ì ì •ë³´ê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤");
+		        }
+		    }
 		});
 
 		cancelBtn.addActionListener(new ActionListener() {
