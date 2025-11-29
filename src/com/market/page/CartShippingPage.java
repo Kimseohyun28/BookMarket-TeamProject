@@ -5,6 +5,9 @@ import java.awt.*;
 import com.market.cart.Cart;
 import com.market.member.UserInIt;
 import java.awt.event.ActionEvent;
+import com.market.dao.UserDAO;
+import com.market.dao.OrderDAO;
+import com.market.cart.CartItem;
 
 public class CartShippingPage extends JPanel {
 
@@ -12,6 +15,10 @@ public class CartShippingPage extends JPanel {
 	JPanel shippingPanel;
 	JPanel radioPanel;
 
+	private JTextField nameField;
+    private JTextField phoneField;
+    private JTextField addressField;
+    
 	public CartShippingPage(JPanel panel, Cart cart) {
 
 		Font ft;
@@ -82,19 +89,17 @@ public class CartShippingPage extends JPanel {
 
 		JPanel namePanel = new JPanel();
 		namePanel.setBounds(0, 100, 700, 50);
-		// namePanel.setBackground(Color.GRAY);
 		JLabel nameLabel = new JLabel("고객명 : ");
 		nameLabel.setFont(ft);
 		namePanel.add(nameLabel);
 
-		JTextField nameLabel2 = new JTextField(15);
-		nameLabel2.setFont(ft);
+		nameField = new JTextField(15);
+		nameField.setFont(ft);
 		if (select) {
-			nameLabel2.setBackground(Color.LIGHT_GRAY);
-			// nameLabel2.setText("입력된 고객 이름");
-			nameLabel2.setText(UserInIt.getmUser().getName());
+			nameField.setBackground(Color.LIGHT_GRAY);
+			nameField.setText(UserInIt.getmUser().getName());
 		}
-		namePanel.add(nameLabel2);
+		namePanel.add(nameField);
 		shippingPanel.add(namePanel);
 
 		JPanel phonePanel = new JPanel();
@@ -103,14 +108,13 @@ public class CartShippingPage extends JPanel {
 		phoneLabel.setFont(ft);
 		phonePanel.add(phoneLabel);
 
-		JTextField phoneLabel2 = new JTextField(15);
-		phoneLabel2.setFont(ft);
+		phoneField = new JTextField(15);
+		phoneField.setFont(ft);
 		if (select) {
-			phoneLabel2.setBackground(Color.LIGHT_GRAY);
-			// phoneLabel2.setText("입력된 고객 연락처");
-			phoneLabel2.setText(String.valueOf(UserInIt.getmUser().getPhone()));
+			phoneField.setBackground(Color.LIGHT_GRAY);
+			phoneField.setText(String.valueOf(UserInIt.getmUser().getPhone()));
 		}
-		phonePanel.add(phoneLabel2);
+		phonePanel.add(phoneField);
 		shippingPanel.add(phonePanel);
 
 		JPanel addressPanel = new JPanel();
@@ -119,9 +123,9 @@ public class CartShippingPage extends JPanel {
 		label.setFont(ft);
 		addressPanel.add(label);
 
-		JTextField addressText = new JTextField(15);
-		addressText.setFont(ft);
-		addressPanel.add(addressText);
+		addressField = new JTextField(15);
+	    addressField.setFont(ft);
+		addressPanel.add(addressField);
 		shippingPanel.add(addressPanel);
 
 		JPanel buttonPanel = new JPanel();
@@ -135,22 +139,94 @@ public class CartShippingPage extends JPanel {
 		shippingPanel.add(buttonPanel);
 
 		orderButton.addActionListener(new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
+		    public void actionPerformed(ActionEvent e) {
 
-				radioPanel.removeAll();
+		        // 1) 입력값 읽기
+		        String name = nameField.getText().trim();
+		        String phone = phoneField.getText().trim();
+		        String address = addressField.getText().trim();
 
-				radioPanel.revalidate();
+		        if (name.isEmpty() || phone.isEmpty() || address.isEmpty()) {
+		            JOptionPane.showMessageDialog(orderButton,
+		                    "고객명 / 연락처 / 배송지를 모두 입력하세요.",
+		                    "입력 오류",
+		                    JOptionPane.ERROR_MESSAGE);
+		            return;
+		        }
 
-				radioPanel.repaint();
-				shippingPanel.removeAll();
+		        try {
+		            // 2) users 테이블에 유저 등록/조회
+		            UserDAO userDao = new UserDAO();
+		            int userId = userDao.ensureUser(name, phone);
 
-				shippingPanel.add("주문 배송지", new CartOrderBillPage(shippingPanel, mCart));
+		            if (userId <= 0) {
+		                JOptionPane.showMessageDialog(orderButton,
+		                        "고객 정보를 DB에 저장하는 중 오류가 발생했습니다.",
+		                        "주문 오류",
+		                        JOptionPane.ERROR_MESSAGE);
+		                return;
+		            }
 
-				mCart.deleteBook();
-				shippingPanel.revalidate();
-				shippingPanel.repaint();
+		            // 3) 장바구니 총 금액 계산
+		            int totalPrice = 0;
+		            for (CartItem item : mCart.getmCartItem()) {
+		                totalPrice += item.getTotalPrice();
+		            }
 
-			}
+		            // 4) orders 테이블에 주문 1건 저장
+		            OrderDAO orderDao = new OrderDAO();
+		            long orderId = orderDao.insertOrder(
+		                    userId,
+		                    name,
+		                    phone,
+		                    address,
+		                    totalPrice
+		            );
+
+		            if (orderId <= 0) {
+		                JOptionPane.showMessageDialog(orderButton,
+		                        "주문 정보를 DB에 저장하는 중 오류가 발생했습니다.",
+		                        "주문 오류",
+		                        JOptionPane.ERROR_MESSAGE);
+		                return;
+		            }
+
+		            // 5) order_items 테이블에 장바구니 항목들 저장
+		            for (CartItem ci : mCart.getmCartItem()) {
+		                orderDao.insertOrderItem(
+		                        orderId,
+		                        ci.getBookID(),
+		                        ci.getQuantity(),
+		                        ci.getItemBook().getUnitPrice(),
+		                        ci.getTotalPrice()
+		                );
+		            }
+
+		            // 6) 화면 교체 + 장바구니 비우기 (기존 코드 유지)
+		            radioPanel.removeAll();
+		            radioPanel.revalidate();
+		            radioPanel.repaint();
+
+		            shippingPanel.removeAll();
+		            shippingPanel.add("주문 배송지", new CartOrderBillPage(shippingPanel, mCart));
+
+		            mCart.deleteBook();
+		            shippingPanel.revalidate();
+		            shippingPanel.repaint();
+
+		            JOptionPane.showMessageDialog(orderButton,
+		                    "주문이 완료되었습니다.\n주문번호: " + orderId,
+		                    "주문 완료",
+		                    JOptionPane.INFORMATION_MESSAGE);
+
+		        } catch (Exception ex) {
+		            ex.printStackTrace();
+		            JOptionPane.showMessageDialog(orderButton,
+		                    "주문 처리 중 예기치 못한 오류가 발생했습니다.",
+		                    "주문 오류",
+		                    JOptionPane.ERROR_MESSAGE);
+		        }
+		    }
 		});
 	}
 
