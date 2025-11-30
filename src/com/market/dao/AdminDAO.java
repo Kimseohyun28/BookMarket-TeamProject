@@ -23,12 +23,13 @@ public class AdminDAO {
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    String name = rs.getString("name");
-                    String mobile = rs.getString("mobile");
+                    String name   = rs.getString("name");
+                    String mobile = rs.getString("mobile");   // 010 포함된 문자열
 
-                    // Admin 생성자 형태에 맞게 수정(지금은 (이름, 전화번호 int)라고 가정)
-                    int phoneInt = parseMobileInt(mobile);
-                    Admin admin = new Admin(name, phoneInt);
+                    // 전화번호를 그대로 String으로 사용
+                    Admin admin = new Admin(name, mobile);
+                    admin.setId(adminId);
+                    admin.setPassword(password);
 
                     return admin;
                 }
@@ -39,17 +40,6 @@ public class AdminDAO {
         }
 
         return null;  // 로그인 실패
-    }
-
-    private int parseMobileInt(String mobile) {
-        if (mobile == null) return 0;
-        String digits = mobile.replaceAll("\\D", "");
-        if (digits.isEmpty()) return 0;
-        try {
-            return Integer.parseInt(digits.substring(Math.max(0, digits.length() - 9)));
-        } catch (NumberFormatException e) {
-            return 0;
-        }
     }
 }
 
