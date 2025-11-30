@@ -4,11 +4,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import com.market.page.GuestInfoPage;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import com.market.cart.Cart;
 import com.market.bookitem.BookInIt;
+import com.market.member.UserInIt;
+import com.market.dao.CartItemDAO;
+import com.market.dao.CartItemRow;
+import com.market.dao.BookDAO;
+import com.market.bookitem.Book;
+
 import com.market.page.CartAddItemPage;
 import com.market.page.CartItemListPage;
 import com.market.page.CartShippingPage;
@@ -58,6 +65,10 @@ public class MainWindow extends JFrame {
 
 	private void menuIntroduction() {
 		mCart = new Cart();
+		
+		//DB에 저장된 장바구니를 메모리로 복원
+	    restoreCartFromDB();
+	    
 		Font ft;
 		ft = new Font("함초롬돋움", Font.BOLD, 15);
 
@@ -301,5 +312,30 @@ public class MainWindow extends JFrame {
 				JOptionPane.showMessageDialog(button, "장바구니의 모든 항목을 삭제했습니다");
 			}
 		}
+	}
+	
+	private void restoreCartFromDB() {
+	    // UserInIt에서 세션 ID 가져오기
+	    String sessionId = UserInIt.getSessionId();
+	    if (sessionId == null || sessionId.isEmpty()) {
+	        return;  // 세션 ID 없으면 바로 종료
+	    }
+
+	    CartItemDAO cartDao = new CartItemDAO();
+	    BookDAO bookDao = new BookDAO();
+
+	    // DB에서 이 세션의 장바구니 목록 조회
+	    java.util.List<CartItemRow> rows = cartDao.findBySessionId(sessionId);
+
+	    for (CartItemRow row : rows) {
+	        // book_id로 Book 객체 조회
+	        Book book = bookDao.findById(row.getBookId());
+	        if (book == null) continue;
+
+	        // quantity 수만큼 Cart에 집어넣기
+	        for (int i = 0; i < row.getQuantity(); i++) {
+	            mCart.insertBook(book);
+	        }
+	    }
 	}
 }

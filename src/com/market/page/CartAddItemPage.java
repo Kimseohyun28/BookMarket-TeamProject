@@ -7,6 +7,8 @@ import com.market.bookitem.Book;
 import com.market.bookitem.BookInIt;
 import com.market.cart.Cart;
 import com.market.dao.BookDAO;
+import com.market.dao.CartItemDAO;
+import com.market.member.UserInIt;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -157,12 +159,25 @@ public class CartAddItemPage extends JPanel {
                         JOptionPane.showMessageDialog(addButton, "선택한 도서를 찾을 수 없습니다.");
                         return;
                     }
+                    
+                    //세션 ID 가져오기 (이름_전화번호숫자)
+                    String sessionId = UserInIt.getSessionId();
+                    CartItemDAO cartDao = new CartItemDAO();
 
                     if (!isCartInBook(selectedBook.getBookId())) {
                         mCart.insertBook(selectedBook);
+                        
+                     //DB 장바구니에도 +1
+                        cartDao.upsertCartItem(sessionId, selectedBook.getBookId(), 1);
                         JOptionPane.showMessageDialog(addButton, "장바구니에 추가했습니다.");
                     } else {
-                        JOptionPane.showMessageDialog(addButton, "이미 장바구니에 있는 도서입니다.");
+                        // 이미 장바구니에 있던 도서면
+                        // isCartInBook() 안에서 수량만 +1 된 상태
+
+                        //DB 장바구니에도 수량 +1
+                        cartDao.upsertCartItem(sessionId, selectedBook.getBookId(), 1);
+
+                        JOptionPane.showMessageDialog(addButton, "이미 장바구니에 있는 도서입니다.\n수량을 1 증가시켰습니다.");
                     }
                 }
             }
