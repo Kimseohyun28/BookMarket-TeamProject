@@ -167,10 +167,7 @@ public class CartShippingPage extends JPanel {
 
                 // 3) 연락처 숫자 여부 체크 (하이픈 제거 후)
                 String phoneDigits = phone.replaceAll("\\D", "");
-                int phoneInt;
-                try {
-                    phoneInt = Integer.parseInt(phoneDigits);
-                } catch (NumberFormatException ex) {
+                if (phoneDigits.isEmpty()) {
                     JOptionPane.showMessageDialog(orderButton,
                             "연락처는 숫자로만 입력해주세요.",
                             "입력 오류",

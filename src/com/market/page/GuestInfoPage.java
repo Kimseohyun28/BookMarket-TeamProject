@@ -39,7 +39,7 @@ public class GuestInfoPage extends JPanel {
         phoneLabel.setFont(ft);
 
         JLabel phoneField = new JLabel();
-        phoneField.setText(String.valueOf(UserInIt.getmUser().getPhone()));
+        phoneField.setText(UserInIt.getmUser().getPhone());
         phoneField.setFont(ft);
 
         phonePanel.add(phoneLabel);
