@@ -6,8 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/joole/Downloads/json-20250517.jar"/>
-	<classpathentry kind="lib" path="C:/Users/joole/Downloads/gson-2.13.2.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/mysql-connector-j-9.5.0/mysql-connector-j-9.5.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/rlatj/eclipse-workspace/drivers/mysql-connector-j-9.5.0/mysql-connector-j-9.5.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/rlatj/eclipse-workspace/drivers/gson-2.10.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

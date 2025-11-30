@@ -146,6 +146,7 @@ public class CartShippingPage extends JPanel {
 		        String phone = phoneField.getText().trim();
 		        String address = addressField.getText().trim();
 
+		        // 2) 빈 값 체크
 		        if (name.isEmpty() || phone.isEmpty() || address.isEmpty()) {
 		            JOptionPane.showMessageDialog(orderButton,
 		                    "고객명 / 연락처 / 배송지를 모두 입력하세요.",
@@ -154,8 +155,21 @@ public class CartShippingPage extends JPanel {
 		            return;
 		        }
 
+		        // 3) 연락처 숫자 여부 체크 (하이픈 제거 후)
+		        String phoneDigits = phone.replaceAll("\\D", "");
+		        int phoneInt;
 		        try {
-		            // 2) users 테이블에 유저 등록/조회
+		            phoneInt = Integer.parseInt(phoneDigits);
+		        } catch (NumberFormatException ex) {
+		            JOptionPane.showMessageDialog(orderButton,
+		                    "연락처는 숫자로만 입력해주세요.",
+		                    "입력 오류",
+		                    JOptionPane.ERROR_MESSAGE);
+		            return;
+		        }
+
+		        try {
+		            // 4) users 테이블에 유저 등록/조회
 		            UserDAO userDao = new UserDAO();
 		            int userId = userDao.ensureUser(name, phone);
 
@@ -167,13 +181,20 @@ public class CartShippingPage extends JPanel {
 		                return;
 		            }
 
-		            // 3) 장바구니 총 금액 계산
+		            // 5) UserInIt 쪽에도 배송지/이름/전화번호 반영
+		            if (UserInIt.getmUser() != null) {
+		                UserInIt.getmUser().setName(name);
+		                UserInIt.getmUser().setPhone(phoneInt);
+		                UserInIt.getmUser().setAddress(address);
+		            }
+
+		            // 6) 장바구니 총 금액 계산
 		            int totalPrice = 0;
 		            for (CartItem item : mCart.getmCartItem()) {
 		                totalPrice += item.getTotalPrice();
 		            }
 
-		            // 4) orders 테이블에 주문 1건 저장
+		            // 7) orders 테이블에 주문 1건 저장
 		            OrderDAO orderDao = new OrderDAO();
 		            long orderId = orderDao.insertOrder(
 		                    userId,
@@ -191,7 +212,7 @@ public class CartShippingPage extends JPanel {
 		                return;
 		            }
 
-		            // 5) order_items 테이블에 장바구니 항목들 저장
+		            // 8) order_items 테이블에 장바구니 항목들 저장
 		            for (CartItem ci : mCart.getmCartItem()) {
 		                orderDao.insertOrderItem(
 		                        orderId,
@@ -202,7 +223,7 @@ public class CartShippingPage extends JPanel {
 		                );
 		            }
 
-		            // 6) 화면 교체 + 장바구니 비우기 (기존 코드 유지)
+		            // 9) 화면 교체 + 장바구니 비우기
 		            radioPanel.removeAll();
 		            radioPanel.revalidate();
 		            radioPanel.repaint();
