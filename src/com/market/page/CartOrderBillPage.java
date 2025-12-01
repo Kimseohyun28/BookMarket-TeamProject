@@ -1,6 +1,8 @@
 package com.market.page;
 
 import javax.swing.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.market.bookitem.BookInIt;
 import com.market.cart.Cart;
@@ -42,9 +44,13 @@ public class CartOrderBillPage extends JPanel {
         Font ft;
         ft = new Font("함초롬돋움", Font.BOLD, 15);
 
-        Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-        String strDate = formatter.format(date);
+        // 📌 발송일 = 오늘 날짜
+        LocalDate today = LocalDate.now();
+        String sendDate = today.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+
+        // 📌 배송 예정일 = 오늘 + 3일
+        LocalDate shippingDate = today.plusDays(3);
+        String estimatedDate = shippingDate.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
 
         JPanel panel01 = new JPanel();
         panel01.setBounds(0, 0, 500, 30);
@@ -61,16 +67,33 @@ public class CartOrderBillPage extends JPanel {
         panel02.add(label02);
         shippingPanel.add(panel02);
 
+        // 📌 배송지
         JPanel panel03 = new JPanel();
         panel03.setBounds(0, 60, 500, 30);
-        JLabel label03 = new JLabel("배송지 : " + address + " 발송일 : " + strDate);
-        label03.setHorizontalAlignment(JLabel.LEFT);
+        JLabel label03 = new JLabel("배송지 : " + address);
         label03.setFont(ft);
         panel03.add(label03);
         shippingPanel.add(panel03);
 
+        // 📌 발송일 (오늘)
+        JPanel panel04 = new JPanel();
+        panel04.setBounds(0, 90, 500, 30);
+        JLabel label04 = new JLabel("발송일 : " + sendDate);
+        label04.setFont(ft);
+        panel04.add(label04);
+        shippingPanel.add(panel04);
+
+        // 📌 배송 예정일 (3일 후)
+        JPanel panel05 = new JPanel();
+        panel05.setBounds(0, 120, 500, 30);
+        JLabel label05 = new JLabel("배송 예정일 : " + estimatedDate);
+        label05.setFont(ft);
+        panel05.add(label05);
+        shippingPanel.add(panel05);
+
+        // 장바구니 출력 패널
         JPanel printPanel = new JPanel();
-        printPanel.setBounds(0, 100, 500, 300);
+        printPanel.setBounds(0, 160, 500, 300);
         printCart(printPanel);
         shippingPanel.add(printPanel);
     }

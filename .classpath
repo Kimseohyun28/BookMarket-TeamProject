@@ -6,7 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/rlatj/eclipse-workspace/drivers/mysql-connector-j-9.5.0/mysql-connector-j-9.5.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/rlatj/eclipse-workspace/drivers/gson-2.10.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/seowon/git/realmak/lib/gson-2.10.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/seowon/git/realmak/lib/mysql-connector-j-9.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

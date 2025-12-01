@@ -1,6 +1,7 @@
 package com.market.page;
 
 import javax.swing.*;
+import java.sql.Timestamp;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -22,7 +23,7 @@ public class OrderHistoryPage extends JPanel {
     private DefaultTableModel detailModel;
 
     private static final String[] ORDER_HEADER = {
-            "주문번호", "주문일시", "수령인", "연락처", "배송지", "총금액", "상품 개수"
+            "주문번호", "주문일시", "배송예정일", "수령인", "연락처", "배송지", "총금액", "상품 개수"
     };
 
     private static final String[] ITEM_HEADER = {
@@ -136,9 +137,14 @@ public class OrderHistoryPage extends JPanel {
         }
 
         for (OrderSummaryRow row : orders) {
+        	
+        	Timestamp orderDate = row.getOrderDate();
+        	Timestamp deliveryDate = Timestamp.valueOf(orderDate.toLocalDateTime().plusDays(3));
+        	
             Object[] tableRow = new Object[]{
                     row.getOrderId(),
-                    row.getOrderDate(),      // Timestamp 그대로 표시 (원하면 포맷 변경 가능)
+                    orderDate,
+                    deliveryDate,     // Timestamp 그대로 표시 (원하면 포맷 변경 가능)
                     row.getReceiverName(),
                     row.getReceiverPhone(),
                     row.getReceiverAddress(),
