@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.ArrayList;
 
 public class OrderDAO {
 
@@ -73,5 +76,87 @@ public class OrderDAO {
             e.printStackTrace();
             return 0;
         }
+    }
+    
+    public List<OrderSummaryRow> findOrdersByUser(int userId) {
+        String sql =
+            "SELECT o.order_id, o.order_date, " +
+            "       o.receiver_name, o.receiver_phone, o.receiver_address, " +
+            "       o.total_price, " +
+            "       COUNT(oi.order_item_id) AS item_count " +
+            "FROM orders o " +
+            "LEFT JOIN order_items oi ON o.order_id = oi.order_id " +
+            "WHERE o.user_id = ? " +
+            "GROUP BY o.order_id, o.order_date, " +
+            "         o.receiver_name, o.receiver_phone, o.receiver_address, o.total_price " +
+            "ORDER BY o.order_date DESC";
+
+        List<OrderSummaryRow> list = new ArrayList<>();
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, userId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    long orderId = rs.getLong("order_id");
+                    Timestamp orderDate = rs.getTimestamp("order_date");
+                    String receiverName = rs.getString("receiver_name");
+                    String receiverPhone = rs.getString("receiver_phone");
+                    String receiverAddress = rs.getString("receiver_address");
+                    int totalPrice = rs.getInt("total_price");
+                    int itemCount = rs.getInt("item_count");
+
+                    OrderSummaryRow row = new OrderSummaryRow(
+                        orderId, orderDate,
+                        receiverName, receiverPhone, receiverAddress,
+                        totalPrice, itemCount
+                    );
+                    list.add(row);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+    
+    public List<OrderItemRow> findOrderItems(long orderId) {
+        String sql =
+            "SELECT oi.book_id, b.name AS book_name, " +
+            "       oi.quantity, oi.unit_price, oi.total_price " +
+            "FROM order_items oi " +
+            "JOIN book b ON oi.book_id = b.book_id " +
+            "WHERE oi.order_id = ?";
+
+        List<OrderItemRow> list = new ArrayList<>();
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setLong(1, orderId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String bookId   = rs.getString("book_id");
+                    String bookName = rs.getString("book_name");
+                    int quantity    = rs.getInt("quantity");
+                    int unitPrice   = rs.getInt("unit_price");
+                    int totalPrice  = rs.getInt("total_price");
+
+                    OrderItemRow row = new OrderItemRow(
+                        bookId, bookName,
+                        quantity, unitPrice, totalPrice
+                    );
+                    list.add(row);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 }
