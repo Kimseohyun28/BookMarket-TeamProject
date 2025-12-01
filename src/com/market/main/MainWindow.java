@@ -4,16 +4,25 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import com.market.page.GuestInfoPage;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import com.market.cart.Cart;
 import com.market.bookitem.BookInIt;
+import com.market.member.UserInIt;
+import com.market.dao.CartItemDAO;
+import com.market.dao.CartItemRow;
+import com.market.dao.BookDAO;
+import com.market.bookitem.Book;
+
 import com.market.page.CartAddItemPage;
 import com.market.page.CartItemListPage;
 import com.market.page.CartShippingPage;
 import com.market.page.AdminLoginDialog;
 import com.market.page.AdminPage;
+import com.market.page.OrderHistoryPage;
+
 
 public class MainWindow extends JFrame {
 	static Cart mCart;
@@ -58,6 +67,10 @@ public class MainWindow extends JFrame {
 
 	private void menuIntroduction() {
 		mCart = new Cart();
+		
+		//DB에 저장된 장바구니를 메모리로 복원
+	    restoreCartFromDB();
+	    
 		Font ft;
 		ft = new Font("함초롬돋움", Font.BOLD, 15);
 
@@ -216,7 +229,20 @@ public class MainWindow extends JFrame {
 				}
 			}
 		});
+		
+		JButton bt10 = new JButton("주문 내역 보기");
+		bt10.setFont(ft);
+		mMenuPanel.add(bt10);
 
+		bt10.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        mPagePanel.removeAll();
+		        mPagePanel.add("주문 내역 보기", new OrderHistoryPage(mPagePanel));
+		        mPagePanel.revalidate();
+		        mPagePanel.repaint();
+		    }
+		});
 	}
 
 	private void initMenu() {
@@ -254,7 +280,10 @@ public class MainWindow extends JFrame {
 		JMenu menu04 = new JMenu("주문");
 		menu04.setFont(ft);
 		JMenuItem item07 = new JMenuItem("영수증 표시");
+		JMenuItem item08 = new JMenuItem("주문 내역 보기");   //추가된 메뉴
 		menu04.add(item07);
+		menu04.add(item08); 
+		
 		menuBar.add(menu04);
 		setJMenuBar(menuBar);
 
@@ -286,6 +315,17 @@ public class MainWindow extends JFrame {
 				mPagePanel.revalidate();
 			}
 		});
+		
+		//주문 내역 보기 메뉴 리스너
+	    item08.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            mPagePanel.removeAll();
+	            mPagePanel.add("주문 내역 보기", new OrderHistoryPage(mPagePanel));
+	            mPagePanel.revalidate();
+	            mPagePanel.repaint();
+	        }
+	    });
 	}
 
 	private void menuCartClear(JButton button) {
@@ -301,5 +341,30 @@ public class MainWindow extends JFrame {
 				JOptionPane.showMessageDialog(button, "장바구니의 모든 항목을 삭제했습니다");
 			}
 		}
+	}
+	
+	private void restoreCartFromDB() {
+	    // UserInIt에서 세션 ID 가져오기
+	    String sessionId = UserInIt.getSessionId();
+	    if (sessionId == null || sessionId.isEmpty()) {
+	        return;  // 세션 ID 없으면 바로 종료
+	    }
+
+	    CartItemDAO cartDao = new CartItemDAO();
+	    BookDAO bookDao = new BookDAO();
+
+	    // DB에서 이 세션의 장바구니 목록 조회
+	    java.util.List<CartItemRow> rows = cartDao.findBySessionId(sessionId);
+
+	    for (CartItemRow row : rows) {
+	        // book_id로 Book 객체 조회
+	        Book book = bookDao.findById(row.getBookId());
+	        if (book == null) continue;
+
+	        // quantity 수만큼 Cart에 집어넣기
+	        for (int i = 0; i < row.getQuantity(); i++) {
+	            mCart.insertBook(book);
+	        }
+	    }
 	}
 }

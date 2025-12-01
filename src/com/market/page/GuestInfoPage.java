@@ -6,55 +6,57 @@ import com.market.member.UserInIt;
 
 public class GuestInfoPage extends JPanel {
 
-	public GuestInfoPage(JPanel panel) {
-		Font ft;
-		ft = new Font("함초롬돋움", Font.BOLD, 15);
+    public GuestInfoPage(JPanel panel) {
 
-		setLayout(null);
+        Font ft;
+        ft = new Font("함초롬돋움", Font.BOLD, 15);
 
-		Rectangle rect = panel.getBounds();
-		System.out.println(rect);
-		setPreferredSize(rect.getSize());
+        setLayout(null);
 
-		JPanel namePanel = new JPanel();
-		namePanel.setBounds(0, 100, 1000, 50);
-		add(namePanel);
-		JLabel nameLabel = new JLabel("이   름 : ");
-		nameLabel.setFont(ft);
-		nameLabel.setBackground(Color.BLUE);
+        Rectangle rect = panel.getBounds();
+        System.out.println(rect);
+        setPreferredSize(rect.getSize());
 
-		JLabel nameField = new JLabel();
-		// nameField.setText("입력된 고객이름");
-		nameField.setText(UserInIt.getmUser().getName());
-		nameField.setFont(ft);
+        JPanel namePanel = new JPanel();
+        namePanel.setBounds(0, 100, 1000, 50);
+        add(namePanel);
 
-		namePanel.add(nameLabel);
-		namePanel.add(nameField);
+        JLabel nameLabel = new JLabel("이 름 : ");
+        nameLabel.setFont(ft);
+        nameLabel.setBackground(Color.BLUE);
+        JLabel nameField = new JLabel();
+        nameField.setText(UserInIt.getmUser().getName());
+        nameField.setFont(ft);
 
-		JPanel phonePanel = new JPanel();
-		phonePanel.setBounds(0, 150, 1000, 100);
-		add(phonePanel);
-		JLabel phoneLabel = new JLabel("연락처 : ");
-		phoneLabel.setFont(ft);
-		JLabel phoneField = new JLabel();
-		// phoneField.setText("입력된 고객 연락처");
-		phoneField.setText(String.valueOf(UserInIt.getmUser().getPhone()));
-		phoneField.setFont(ft);
+        namePanel.add(nameLabel);
+        namePanel.add(nameField);
 
-		phonePanel.add(phoneLabel);
-		phonePanel.add(phoneField);
-	}
+        JPanel phonePanel = new JPanel();
+        phonePanel.setBounds(0, 150, 1000, 100);
+        add(phonePanel);
 
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		frame.setBounds(0, 0, 1000, 750);
-		frame.setLayout(null);
+        JLabel phoneLabel = new JLabel("연락처 : ");
+        phoneLabel.setFont(ft);
 
-		JPanel mPagePanel = new JPanel();
-		mPagePanel.setBounds(0, 150, 1000, 750);
+        JLabel phoneField = new JLabel();
+        phoneField.setText(UserInIt.getmUser().getPhone());
+        phoneField.setFont(ft);
 
-		frame.add(mPagePanel);
-		mPagePanel.add("고객 정보 확인하기", new GuestInfoPage(mPagePanel));
-		frame.setVisible(true);
-	}
+        phonePanel.add(phoneLabel);
+        phonePanel.add(phoneField);
+
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame();
+        frame.setBounds(0, 0, 1000, 750);
+        frame.setLayout(null);
+
+        JPanel mPagePanel = new JPanel();
+        mPagePanel.setBounds(0, 150, 1000, 750);
+        frame.add(mPagePanel);
+        mPagePanel.add("고객 정보 확인하기", new GuestInfoPage(mPagePanel));
+
+        frame.setVisible(true);
+    }
 }
