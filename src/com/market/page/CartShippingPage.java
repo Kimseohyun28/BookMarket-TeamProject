@@ -186,7 +186,8 @@ public class CartShippingPage extends JPanel {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-
+                    //이번 주문의 userId를 메모리에 저장 (주문 내역 조회에 사용)
+                    UserInIt.setUserId(userId);
                     // 5) UserInIt 쪽에도 배송지/이름/전화번호 반영
                     if (UserInIt.getmUser() != null) {
                         UserInIt.getmUser().setName(name);

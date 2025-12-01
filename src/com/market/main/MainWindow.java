@@ -21,6 +21,8 @@ import com.market.page.CartItemListPage;
 import com.market.page.CartShippingPage;
 import com.market.page.AdminLoginDialog;
 import com.market.page.AdminPage;
+import com.market.page.OrderHistoryPage;
+
 
 public class MainWindow extends JFrame {
 	static Cart mCart;
@@ -227,7 +229,20 @@ public class MainWindow extends JFrame {
 				}
 			}
 		});
+		
+		JButton bt10 = new JButton("주문 내역 보기");
+		bt10.setFont(ft);
+		mMenuPanel.add(bt10);
 
+		bt10.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        mPagePanel.removeAll();
+		        mPagePanel.add("주문 내역 보기", new OrderHistoryPage(mPagePanel));
+		        mPagePanel.revalidate();
+		        mPagePanel.repaint();
+		    }
+		});
 	}
 
 	private void initMenu() {
@@ -265,7 +280,10 @@ public class MainWindow extends JFrame {
 		JMenu menu04 = new JMenu("주문");
 		menu04.setFont(ft);
 		JMenuItem item07 = new JMenuItem("영수증 표시");
+		JMenuItem item08 = new JMenuItem("주문 내역 보기");   //추가된 메뉴
 		menu04.add(item07);
+		menu04.add(item08); 
+		
 		menuBar.add(menu04);
 		setJMenuBar(menuBar);
 
@@ -297,6 +315,17 @@ public class MainWindow extends JFrame {
 				mPagePanel.revalidate();
 			}
 		});
+		
+		//주문 내역 보기 메뉴 리스너
+	    item08.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            mPagePanel.removeAll();
+	            mPagePanel.add("주문 내역 보기", new OrderHistoryPage(mPagePanel));
+	            mPagePanel.revalidate();
+	            mPagePanel.repaint();
+	        }
+	    });
 	}
 
 	private void menuCartClear(JButton button) {

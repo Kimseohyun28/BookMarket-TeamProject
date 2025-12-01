@@ -3,29 +3,44 @@ package com.market.member;
 public class UserInIt {
 
     private static User mUser;
-    private static String sessionId; // 세션 ID 보관
+    private static String sessionId;  // 장바구니용 세션 ID
+    private static int userId;        // DB users.user_id 저장용
 
     public static void setmUser(User mUser) {
         UserInIt.mUser = mUser;
     }
 
-    // name + phone 입력될 때 User 생성 + sessionId 생성도 같이 해야 함
+    // 손님 정보 입력 시 호출 (GuestWindow)
     public static void init(String name, String phone) {
         mUser = new User(name, phone);
 
-        // 전화번호에서 숫자만 추출 (010-1234-5678 → 01012345678)
-        String digits = phone.replaceAll("\\D", "");
-
-        // 세션 ID 생성 규칙: 이름_전화번호
+        // 🔹 sessionId 생성 (장바구니 DB 저장/복원용)
+        String digits = phone.replaceAll("\\D", ""); 
         sessionId = name + "_" + digits;
+
+        // 🔹 DB에 아직 없는 상태로 초기화 (-1)
+        userId = -1;
     }
 
     public static User getmUser() {
         return mUser;
     }
 
-    // 세션 ID getter
+    // ================================
+    // 🔹 장바구니 DB용: 세션 ID
+    // ================================
     public static String getSessionId() {
         return sessionId;
+    }
+
+    // ================================
+    // 🔹 주문 내역 조회용: userId(DB)
+    // ================================
+    public static int getUserId() {
+        return userId;
+    }
+
+    public static void setUserId(int id) {
+        userId = id;
     }
 }
