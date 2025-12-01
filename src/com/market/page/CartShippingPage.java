@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 
 import com.market.dao.UserDAO;
 import com.market.dao.OrderDAO;
+import com.market.dao.CartItemDAO;
 import com.market.cart.CartItem;
 
 public class CartShippingPage extends JPanel {
@@ -224,6 +225,27 @@ public class CartShippingPage extends JPanel {
                                 ci.getTotalPrice()
                         );
                     }
+                    
+                 //DB cart_items 비우기 (세션 기준)
+                 CartItemDAO cartDao = new CartItemDAO();
+                 cartDao.clearCart(UserInIt.getSessionId());
+
+                 //화면 교체 + 메모리 장바구니 비우기
+
+                 radioPanel.removeAll();
+                 radioPanel.revalidate();
+                 radioPanel.repaint();
+
+                 shippingPanel.removeAll();
+                 shippingPanel.add("주문 배송지", new CartOrderBillPage(shippingPanel, mCart));
+                 mCart.deleteBook();   // 메모리 Cart 비우기
+                 shippingPanel.revalidate();
+                 shippingPanel.repaint();
+
+                 JOptionPane.showMessageDialog(orderButton,
+                         "주문이 완료되었습니다.\n주문번호: " + orderId,
+                         "주문 완료",
+                         JOptionPane.INFORMATION_MESSAGE);
 
                     // 9) 화면 교체 + 장바구니 비우기
                     radioPanel.removeAll();
