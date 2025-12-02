@@ -31,7 +31,7 @@ public class GuestWindow extends JFrame {
         });
 
         // ============================
-        // 🔵 커스텀 타이틀바
+        // 커스텀 타이틀바
         // ============================
         JPanel titleBar = new JPanel();
         titleBar.setLayout(null);
@@ -90,7 +90,7 @@ public class GuestWindow extends JFrame {
         add(titleBar);
 
         // ============================
-        // 🔵 타이틀바 아래 구분선
+        // 타이틀바 아래 구분선
         // ============================
         JPanel linePanel = new JPanel();
         linePanel.setBackground(new Color(220,220,220));
@@ -98,7 +98,7 @@ public class GuestWindow extends JFrame {
         add(linePanel);
 
         // ============================
-        // 🔵 전체 배경 (흰색 유지)
+        // 전체 배경 (흰색 유지)
         // ============================
         JPanel contentPanel = new JPanel(null);
         contentPanel.setBounds(0, 42, width, height - 42);
@@ -119,7 +119,7 @@ public class GuestWindow extends JFrame {
         contentPanel.add(userPanel);
 
         // ============================
-        // 🔵 고객정보 회색 카드 박스
+        // 고객정보 회색 카드 박스
         // ============================
         JPanel infoCard = new JPanel(null);
         infoCard.setBounds(width/2 - 200, 260, 400, 260);

@@ -46,12 +46,12 @@ public class MainWindow extends JFrame {
         setBounds(x, y, width, height);
         setLayout(null);
 
-        // ★ 커스텀 UI 추가 부분
+        // 커스텀 UI 추가 부분
         setUndecorated(true);
         applyRoundedCorners(this, 20);
         initCustomTitleBar(width);
         add(titleBar);
-        // ★ 끝
+        // 끝
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation((screenSize.width - 1000) / 2, (screenSize.height - 750) / 2);
@@ -134,7 +134,7 @@ public class MainWindow extends JFrame {
             mPagePanel.repaint();
         });
 
-        JButton bt6 = new JButton("장바구니 항목삭제", new ImageIcon("./images/6.png"));
+        JButton bt6 = new JButton("장바구니 항목삭제", new ImageIcon("./images/5.png"));
         bt6.setFont(ft);
         mMenuPanel.add(bt6);
 
@@ -158,7 +158,7 @@ public class MainWindow extends JFrame {
             mPagePanel.repaint();
         });
 
-        JButton bt7 = new JButton("주문하기", new ImageIcon("./images/7.png"));
+        JButton bt7 = new JButton("주문하기", new ImageIcon("./images/6.png"));
         bt7.setFont(ft);
         mMenuPanel.add(bt7);
 
@@ -173,7 +173,7 @@ public class MainWindow extends JFrame {
             }
         });
 
-        JButton bt8 = new JButton("종료", new ImageIcon("./images/8.png"));
+        JButton bt8 = new JButton("종료", new ImageIcon("./images/7.png"));
         bt8.setFont(ft);
         mMenuPanel.add(bt8);
 
@@ -182,7 +182,7 @@ public class MainWindow extends JFrame {
                 System.exit(0);
         });
 
-        JButton bt9 = new JButton("관리자", new ImageIcon("./images/9.png"));
+        JButton bt9 = new JButton("관리자", new ImageIcon("./images/8.png"));
         bt9.setFont(ft);
         mMenuPanel.add(bt9);
 
@@ -200,7 +200,7 @@ public class MainWindow extends JFrame {
             }
         });
 
-        JButton bt10 = new JButton("주문 내역");
+        JButton bt10 = new JButton("주문 내역", new ImageIcon("./images/9.png"));
         bt10.setFont(ft);
         mMenuPanel.add(bt10);
 
@@ -312,7 +312,7 @@ public class MainWindow extends JFrame {
         }
     }
 
-    // ★★★★★ UI 커스텀 타이틀바
+    //UI 커스텀 타이틀바
     private void initCustomTitleBar(int width) {
 
         titleBar = new JPanel();
@@ -372,7 +372,7 @@ public class MainWindow extends JFrame {
         });
     }
 
-    // ★★★★★ 둥근 모서리 적용 함수
+    //둥근 모서리 적용 함수
     private void applyRoundedCorners(JFrame frame, int radius) {
         frame.setShape(new java.awt.geom.RoundRectangle2D.Float(
                 0, 0, frame.getWidth(), frame.getHeight(), radius, radius));

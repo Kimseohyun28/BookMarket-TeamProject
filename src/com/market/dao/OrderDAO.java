@@ -10,9 +10,8 @@ import java.util.ArrayList;
 
 public class OrderDAO {
 
-    /**
-     * 주문 1건 저장하고 생성된 order_id를 리턴
-     */
+    //주문 1건 저장하고 생성된 order_id를 리턴
+
     public long insertOrder(int userId,
                             String receiverName,
                             String receiverPhone,
@@ -48,9 +47,7 @@ public class OrderDAO {
         return -1;
     }
 
-    /**
-     * 주문 상세 1건 저장 (order_items)
-     */
+    //주문 상세 1건 저장 (order_items)
     public int insertOrderItem(long orderId,
                                String bookId,
                                int quantity,

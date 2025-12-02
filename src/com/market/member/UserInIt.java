@@ -14,11 +14,11 @@ public class UserInIt {
     public static void init(String name, String phone) {
         mUser = new User(name, phone);
 
-        // 🔹 sessionId 생성 (장바구니 DB 저장/복원용)
+        // sessionId 생성 (장바구니 DB 저장/복원용)
         String digits = phone.replaceAll("\\D", ""); 
         sessionId = name + "_" + digits;
 
-        // 🔹 DB에 아직 없는 상태로 초기화 (-1)
+        // DB에 아직 없는 상태로 초기화 (-1)
         userId = -1;
     }
 
@@ -27,14 +27,14 @@ public class UserInIt {
     }
 
     // ================================
-    // 🔹 장바구니 DB용: 세션 ID
+    // 장바구니 DB용: 세션 ID
     // ================================
     public static String getSessionId() {
         return sessionId;
     }
 
     // ================================
-    // 🔹 주문 내역 조회용: userId(DB)
+    // 주문 내역 조회용: userId(DB)
     // ================================
     public static int getUserId() {
         return userId;

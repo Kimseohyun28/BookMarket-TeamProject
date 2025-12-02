@@ -24,11 +24,11 @@ public class Person {
         this.name = name;
     }
 
-    public String getPhone() {      // ✅ 반환 타입 String
+    public String getPhone() {      // 반환 타입 String
         return this.phone;
     }
 
-    public void setPhone(String phone) {   // ✅ 파라미터 타입 String
+    public void setPhone(String phone) {   //파라미터 타입 String
         this.phone = phone;
     }
 

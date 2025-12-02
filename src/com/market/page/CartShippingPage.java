@@ -1,7 +1,6 @@
 package com.market.page;
 
 import javax.swing.*;
-
 import java.awt.*;
 
 import com.market.cart.Cart;
@@ -187,8 +186,9 @@ public class CartShippingPage extends JPanel {
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-                    //이번 주문의 userId를 메모리에 저장 (주문 내역 조회에 사용)
+                    // 이번 주문의 userId를 메모리에 저장 (주문 내역 조회에 사용)
                     UserInIt.setUserId(userId);
+
                     // 5) UserInIt 쪽에도 배송지/이름/전화번호 반영
                     if (UserInIt.getmUser() != null) {
                         UserInIt.getmUser().setName(name);
@@ -225,39 +225,23 @@ public class CartShippingPage extends JPanel {
                                 ci.getTotalPrice()
                         );
                     }
-                    
-                 //DB cart_items 비우기 (세션 기준)
-                 CartItemDAO cartDao = new CartItemDAO();
-                 cartDao.clearCart(UserInIt.getSessionId());
 
-                 //화면 교체 + 메모리 장바구니 비우기
+                    // 9) DB cart_items 비우기 (세션 기준)
+                    CartItemDAO cartDao = new CartItemDAO();
+                    cartDao.clearCart(UserInIt.getSessionId());
 
-                 radioPanel.removeAll();
-                 radioPanel.revalidate();
-                 radioPanel.repaint();
-
-                 shippingPanel.removeAll();
-                 shippingPanel.add("주문 배송지", new CartOrderBillPage(shippingPanel, mCart));
-                 mCart.deleteBook();   // 메모리 Cart 비우기
-                 shippingPanel.revalidate();
-                 shippingPanel.repaint();
-
-                 JOptionPane.showMessageDialog(orderButton,
-                         "주문이 완료되었습니다.\n주문번호: " + orderId,
-                         "주문 완료",
-                         JOptionPane.INFORMATION_MESSAGE);
-
-                    // 9) 화면 교체 + 장바구니 비우기
+                    // 10) 화면 교체 + 메모리 장바구니 비우기
                     radioPanel.removeAll();
                     radioPanel.revalidate();
                     radioPanel.repaint();
 
                     shippingPanel.removeAll();
                     shippingPanel.add("주문 배송지", new CartOrderBillPage(shippingPanel, mCart));
-                    mCart.deleteBook();
+                    mCart.deleteBook();   // 메모리 Cart 비우기
                     shippingPanel.revalidate();
                     shippingPanel.repaint();
 
+                    // 11) 주문 완료 메시지 (1번만)
                     JOptionPane.showMessageDialog(orderButton,
                             "주문이 완료되었습니다.\n주문번호: " + orderId,
                             "주문 완료",
@@ -276,3 +260,4 @@ public class CartShippingPage extends JPanel {
 
     }
 }
+

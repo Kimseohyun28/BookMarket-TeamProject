@@ -98,6 +98,64 @@ public class CartItemListPage extends JPanel {
 				}
 			}
 		});
+		
+		JLabel minusLabel = new JLabel("수량 줄이기");
+		minusLabel.setFont(ft);
+		JButton minusButton = new JButton();
+		minusButton.add(minusLabel);
+		buttonPanel.add(minusButton);
+		
+		minusButton.addActionListener(new AbstractAction() {
+		    public void actionPerformed(ActionEvent e) {
+
+		        if (cart.mCartCount == 0) {
+		            JOptionPane.showMessageDialog(minusButton, "장바구니가 비어 있습니다");
+		            return;
+		        }
+		        if (mSelectRow == -1) {
+		            JOptionPane.showMessageDialog(minusButton, "수량을 줄일 항목을 선택하세요");
+		            return;
+		        }
+
+		        ArrayList<CartItem> cartItem = cart.getmCartItem();
+		        CartItem selected = cartItem.get(mSelectRow);
+
+		        String bookId = selected.getBookID();
+
+		        // DB 수량 -1
+		        String sessionId = UserInIt.getSessionId();
+		        CartItemDAO cartDao = new CartItemDAO();
+		        cartDao.upsertCartItem(sessionId, bookId, -1);
+
+		        // 메모리에서 수량 -1
+		        selected.setQuantity(selected.getQuantity() - 1);
+
+		        // 0 이하이면 삭제
+		        if (selected.getQuantity() <= 0) {
+		            cartItem.remove(mSelectRow);
+		            cart.mCartCount = cartItem.size();
+		            mSelectRow = -1;
+		        }
+
+		        // 테이블 다시 그리기
+		        Object[][] content = new Object[cartItem.size()][tableHeader.length];
+		        Integer totalPrice = 0;
+
+		        for (int i = 0; i < cartItem.size(); i++) {
+		            CartItem item = cartItem.get(i);
+		            content[i][0] = item.getBookID();
+		            content[i][1] = item.getItemBook().getName();
+		            content[i][2] = item.getItemBook().getUnitPrice();
+		            content[i][3] = item.getQuantity();
+		            content[i][4] = item.getTotalPrice();
+		            totalPrice += item.getQuantity() * item.getItemBook().getUnitPrice();
+		        }
+
+		        TableModel tableModel = new DefaultTableModel(content, tableHeader);
+		        cartTable.setModel(tableModel);
+		        totalPricelabel.setText("총금액: " + totalPrice + " 원");
+		    }
+		});
 
 		JLabel removeLabel = new JLabel("장바구니 항목 삭제하기");
 		removeLabel.setFont(ft);
